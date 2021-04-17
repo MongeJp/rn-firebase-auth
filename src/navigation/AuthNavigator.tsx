@@ -11,7 +11,6 @@ export const AuthNavigator = () => {
 
   // Handle user state changes
   function onAuthStateChanged(result) {
-    console.log(result);
     setUser(result);
     if (initializing) setInitializing(false);
   }

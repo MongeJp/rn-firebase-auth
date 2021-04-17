@@ -29,7 +29,6 @@ export const HomeScreen = () => {
   const user = useContext(AuthContext);
 
   const logOut = () => {
-    console.log('xd');
     auth()
       .signOut()
       .then(() => console.log("User signed out!"));
