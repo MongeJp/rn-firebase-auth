@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { StatusBar, Text, View } from "react-native";
 import styled from "styled-components/native";
 import { useForm, Controller } from "react-hook-form";
+import auth from "@react-native-firebase/auth";
 
-import { FormControl } from "../components/FormControl";
-import { Button } from "./../components/Button";
-import { TextButton } from "./../components/TextButton";
+import { FormControl } from "../../../components/FormControl";
+import { Button } from "../../../components/Button";
+import { PlainTextButton } from "../../../components/PlainTextButton";
 
 const SafeArea = styled.SafeAreaView`
   flex: 1;
@@ -45,7 +46,7 @@ const Controls = styled.View`
   align-items: center;
 `;
 
-export const LoginScreen = () => {
+export const LoginScreen = ({ navigation }) => {
   const {
     control,
     handleSubmit,
@@ -55,9 +56,24 @@ export const LoginScreen = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const onSubmit = handleSubmit(
-    (data) => {
+    ({ email, password }) => {
       setIsSubmitted(true);
-      console.log(data);
+      auth()
+        .signInWithEmailAndPassword(email, password)
+        .then(() => {
+          console.log("User account created & signed in!");
+        })
+        .catch((error) => {
+          if (error.code === "auth/email-already-in-use") {
+            console.log("That email address is already in use!");
+          }
+
+          if (error.code === "auth/invalid-email") {
+            console.log("That email address is invalid!");
+          }
+
+          console.error(error);
+        });
     },
     (errors) => {
       setIsSubmitted(true);
@@ -74,7 +90,7 @@ export const LoginScreen = () => {
       <Form>
         <Controller
           control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
+          render={({ field: { onChange, value } }) => (
             <FormControl
               placeHolder="Email Address"
               handleOnChange={(value: string) => onChange(value)}
@@ -95,7 +111,7 @@ export const LoginScreen = () => {
         />
         <Controller
           control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
+          render={({ field: { onChange, value } }) => (
             <FormControl
               placeHolder="Password"
               handleOnChange={(value: string) => onChange(value)}
@@ -126,9 +142,9 @@ export const LoginScreen = () => {
           onPress={onSubmit}
         />
         <View style={{ marginTop: 20 }} />
-        <TextButton
-          onPress={() => {}}
-          text="Don't have an account?"
+        <PlainTextButton
+          onPress={() => navigation.navigate("Register")}
+          text="Don't have an Account?"
           highlightedText="Sign up"
         />
       </Controls>

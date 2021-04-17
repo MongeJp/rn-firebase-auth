@@ -14,7 +14,12 @@ const Text = styled.Text`
   font-size: ${(props: any) => props.theme.fontSizes.button};
 `;
 
-export const TextButton = ({ onPress, text, highlightedText }) => {
+export const PlainTextButton = (props: {
+  onPress: any;
+  text: string;
+  highlightedText: string;
+}) => {
+  const { onPress, text, highlightedText } = props;
   return (
     <TouchableOpacity onPress={onPress}>
       <Text>
